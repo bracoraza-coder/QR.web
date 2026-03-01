@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador QR Avanzado tipo QR.io</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Librería avanzada para logos, formas y exportación SVG/PNG -->
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+</head>
+<body>
+
+    <main class="container">
+        <!-- Columna Izquierda: Opciones y Formulario -->
+        <section class="left">
+            <h1>Generador QR Pro</h1>
+            <p class="subtitle">Crea códigos dinámicos, personalizados y con logo.</p>
+
+            <!-- Pestañas de Tipo de Datos -->
+            <div class="tabs">
+                <button class="tab active" data-target="tab-url">Enlace</button>
+                <button class="tab" data-target="tab-text">Texto</button>
+                <button class="tab" data-target="tab-email">Email</button>
+                <button class="tab" data-target="tab-wa">WhatsApp</button>
+                <button class="tab" data-target="tab-wifi">Wi-Fi</button>
+            </div>
+
+            <!-- Contenedores de Datos Dinámicos -->
+            <div class="tab-content active" id="tab-url">
+                <div class="input-group">
+                    <label>Introduce la URL</label>
+                    <input type="text" id="input-url" placeholder="https://tu-web.com">
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-text">
+                <div class="input-group">
+                    <label>Tu Texto</label>
+                    <textarea id="input-text" rows="3" placeholder="Escribe tu mensaje aquí..."></textarea>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-email">
+                <div class="input-group">
+                    <label>Email de destino</label>
+                    <input type="email" id="input-email-to" placeholder="contacto@ejemplo.com">
+                </div>
+                <div class="input-group">
+                    <label>Asunto</label>
+                    <input type="text" id="input-email-sub" placeholder="Asunto del correo">
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-wa">
+                <div class="input-group">
+                    <label>Número de WhatsApp (con prefijo, ej: +34)</label>
+                    <input type="text" id="input-wa-phone" placeholder="+34 600 000 000">
+                </div>
+                <div class="input-group">
+                    <label>Mensaje predefinido</label>
+                    <input type="text" id="input-wa-msg" placeholder="Hola, me gustaría información...">
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-wifi">
+                <div class="row">
+                    <div class="input-group">
+                        <label>Nombre de Red (SSID)</label>
+                        <input type="text" id="input-wifi-ssid" placeholder="Mi_Red_WiFi">
+                    </div>
+                    <div class="input-group">
+                        <label>Contraseña</label>
+                        <input type="text" id="input-wifi-pass" placeholder="********">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Seguridad</label>
+                    <select id="input-wifi-type">
+                        <option value="WPA">WPA/WPA2</option>
+                        <option value="WEP">WEP</option>
+                        <option value="nopass">Sin contraseña</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <!-- Sección de Diseño -->
+            <h3 class="section-title">🎨 Personaliza el Diseño</h3>
+            
+            <div class="row">
+                <div class="input-group">
+                    <label>Color del QR</label>
+                    <input type="color" id="color-dark" value="#000000">
+                </div>
+                <div class="input-group">
+                    <label>Color de Fondo</label>
+                    <input type="color" id="color-light" value="#ffffff">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Estilo de los puntos</label>
+                <select id="dot-style">
+                    <option value="square">Cuadrados (Clásico)</option>
+                    <option value="dots">Puntos redondos</option>
+                    <option value="rounded">Bordes redondeados</option>
+                    <option value="extra-rounded">Extra redondeados</option>
+                </select>
+            </div>
+
+            <hr class="divider">
+
+            <!-- Sección de Logo -->
+            <h3 class="section-title">🌟 Añadir Logo</h3>
+            <div class="input-group">
+                <label>Sube un logo para el centro (PNG/JPG)</label>
+                <input type="file" id="logo-input" accept="image/*">
+                <button id="btn-remove-logo" class="btn-text">Quitar Logo</button>
+            </div>
+
+            <button id="btn-generate" class="btn-primary mt-auto">Generar Código QR</button>
+        </section>
+
+        <!-- Columna Derecha: Vista previa y Descargas -->
+        <section class="right">
+            <div id="qr-wrapper">
+                <div id="qr">
+                    <!-- El QR se inyectará aquí -->
+                </div>
+            </div>
+            
+            <div class="download-actions">
+                <button id="btn-down-png" class="btn-secondary" disabled>Descargar PNG</button>
+                <button id="btn-down-svg" class="btn-secondary" disabled>Descargar SVG</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
