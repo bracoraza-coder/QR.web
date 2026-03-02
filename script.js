@@ -179,50 +179,45 @@ function saveToHistory(data, label) {
 }
 
 function renderHistory() {
+    // 1. Elementos HTML
     const historyContainer = document.getElementById('history-container');
     const historyList = document.getElementById('history-list');
-    
+
+    // 2. Si no existen en el HTML, salir para evitar errores
     if (!historyContainer || !historyList) {
         return;
     }
 
-    let historyArray ="""),
-            ],
-        ),
-        types.Content(
-            role="user",
-            parts=[
-                types.Part.from_text(text="""INSERT_INPUT_HERE"""),
-            ],
-        ),
-    ]
-    tools = [
-        types.Tool(code_execution=types.ToolCodeExecution),
-        types.Tool(googleSearch=types.GoogleSearch(
-        )),
-    ]
-    generate_content_config = types.GenerateContentConfig(
-        thinking_config=types.ThinkingConfig(
-            thinking_level="HIGH",
-        ),
-        tools=tools,
-    )
+    // 3. Recuperar datos (Escrito simple para evitar errores de corte)
+    let history = [];
+    const savedData = localStorage.getItem('qrHistory');
+    
+    if (savedData) {
+        history = JSON.parse(savedData);
+    }
 
-    for chunk in client.models.generate_content_stream(
-        model=model,
-        contents=contents,
-        config=generate_content_config,
-    ):
-        if (
-            chunk.parts is None
-        ):
-            continue
-        if chunk.parts[0].text:
-            print(chunk.parts[0].text, end="")
-        if chunk.parts[0].executable_code:
-            print(chunk.parts[0].executable_code)
-        if chunk.parts[0].code_execution_result:
-            print(chunk.parts[0].code_execution_result)
+    // 4. Limpiar vista previa
+    historyList.innerHTML = "";
 
-if __name__ == "__main__":
-    generate()
+    // 5. Si no hay historial, ocultar la caja y salir
+    if (history.length === 0) {
+        historyContainer.style.display = "none";
+        return;
+    }
+
+    // 6. Si hay historial, mostrar la caja y crear la lista
+    historyContainer.style.display = "block";
+
+    history.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item.label; // Mostramos el texto corto (Ej: "Enlace: google.com")
+        
+        // (Opcional) Al hacer click, recargar ese QR
+        li.onclick = function() {
+            // Simulamos escribir el dato y generar
+            alert("Has seleccionado un QR antiguo: " + item.data); 
+        };
+        
+        historyList.appendChild(li);
+    });
+}
