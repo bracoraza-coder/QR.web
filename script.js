@@ -262,13 +262,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 li.textContent = item.label;
                 
                 li.onclick = () => {
-                   alert("Dato antiguo: " + item.data);
-                };
-                list.appendChild(li);
-            });
-        }
-    }
-
+   alert("Dato antiguo: " + item.data);
+};
     // Cargar historial al arrancar
     renderHistory();
 });
