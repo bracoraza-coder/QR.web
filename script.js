@@ -1,12 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==========================================
-    // 1. MODO OSCURO (Conecta con tu CSS)
+    // 1. MODO OSCURO
     // ==========================================
     const themeToggle = document.getElementById('theme-toggle');
     const htmlTag = document.documentElement;
 
-    // Verificar si ya había un tema guardado
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         htmlTag.setAttribute('data-theme', 'dark');
@@ -16,14 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             const isDark = htmlTag.getAttribute('data-theme') === 'dark';
-            
             if (isDark) {
-                // Cambiar a CLARO
                 htmlTag.removeAttribute('data-theme');
                 localStorage.setItem('theme', 'light');
                 themeToggle.textContent = '🌙';
             } else {
-                // Cambiar a OSCURO
                 htmlTag.setAttribute('data-theme', 'dark');
                 localStorage.setItem('theme', 'dark');
                 themeToggle.textContent = '☀️';
@@ -34,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // 2. CONFIGURACIÓN DE LA LIBRERÍA QR
     // ==========================================
-    // Esta parte requiere que el script de 'qr-code-styling' esté en el HTML (head)
     const qrCode = new QRCodeStyling({
         width: 280,
         height: 280,
@@ -47,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
         cornersSquareOptions: { type: "square" }
     });
 
-    // Elementos del DOM
     const qrContainer = document.getElementById("qr");
     const qrWrapper = document.getElementById("qr-wrapper");
     const btnGenerate = document.getElementById("btn-generate");
@@ -67,11 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tabs.forEach(tab => {
         tab.addEventListener("click", () => {
-            // Desactivar todas
             tabs.forEach(t => t.classList.remove("active"));
             tabContents.forEach(c => c.classList.remove("active"));
             
-            // Activar la pulsada
             tab.classList.add("active");
             currentTab = tab.getAttribute("data-target");
             const target = document.getElementById(currentTab);
@@ -108,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. OBTENER DATOS DE LOS FORMULARIOS
     // ==========================================
     function getQrData() {
-        // Ayuda para no fallar si un ID no existe
         const getVal = (id) => {
             const el = document.getElementById(id);
             return el ? el.value.trim() : "";
@@ -164,12 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Leer colores
             const colorDark = document.getElementById("color-dark").value;
             const colorLight = document.getElementById("color-light").value;
             const dotStyle = document.getElementById("dot-style").value;
 
-            // Actualizar QR
             qrCode.update({
                 data: data,
                 image: uploadedLogoData,
@@ -181,20 +170,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            // Reiniciar contenedor (Para animación limpia)
             if (qrContainer) qrContainer.innerHTML = "";
             if (qrWrapper) {
                 qrWrapper.classList.remove("qr-animate");
-                void qrWrapper.offsetWidth; // Truco para reiniciar CSS
+                void qrWrapper.offsetWidth; 
                 qrWrapper.classList.add("qr-animate");
             }
             qrCode.append(qrContainer);
 
-            // Activar descargas
             if (btnDownPng) btnDownPng.disabled = false;
             if (btnDownSvg) btnDownSvg.disabled = false;
             
-            // Guardar Historial
             saveToHistory(data, labelText);
         });
     }
@@ -214,25 +200,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 8. HISTORIAL (SIN ERRORES)
+    // 8. HISTORIAL (CORREGIDO)
     // ==========================================
     function saveToHistory(data, label) {
         if (!data) return;
         
-        // Recuperar seguro
         let history = [];
         try {
             const saved = localStorage.getItem('qrHistory');
             if (saved) history = JSON.parse(saved);
         } catch(e) { history = []; }
 
-        // Evitar duplicado inmediato
         history = history.filter(item => item.data !== data);
-        
-        // Insertar al principio
         history.unshift({ data: data, label: label });
-
-        // Máximo 5
         if (history.length > 5) history.pop();
 
         localStorage.setItem('qrHistory', JSON.stringify(history));
@@ -251,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (saved) history = JSON.parse(saved);
         } catch(e) { history = []; }
 
-        list.innerHTML = ""; // Limpiar lista visual
+        list.innerHTML = ""; 
 
         if (history.length === 0) {
             container.style.display = "none";
@@ -262,21 +242,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 li.textContent = item.label;
                 
                 li.onclick = () => {
-   // Copiar al portapapeles
-   navigator.clipboard.writeText(item.data);
-   
-   // Efecto visual temporal
-   const originalText = li.textContent;
-   li.textContent = "¡Copiado! ✅";
-   li.style.background = "#dcfce7"; // Verde claro
-   li.style.color = "#166534";
-   
-   setTimeout(() => {
-       li.textContent = originalText;
-       li.style.background = ""; // Volver al color original
-       li.style.color = "";
-   }, 1500);
-};
+                    navigator.clipboard.writeText(item.data);
+                    
+                    const originalText = li.textContent;
+                    li.textContent = "¡Copiado! ✅";
+                    li.style.background = "#dcfce7";
+                    li.style.color = "#166534";
+                    
+                    setTimeout(() => {
+                        li.textContent = originalText;
+                        li.style.background = "";
+                        li.style.color = "";
+                    }, 1500);
+                };
+                // ESTA LÍNEA FALTABA: Añadir el elemento a la lista
+                list.appendChild(li);
+            });
+        }
+    }
+
     // Cargar historial al arrancar
     renderHistory();
 });
