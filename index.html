@@ -3,37 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Etiquetas SEO Optimizado -->
-    <title>Crear un QR | Generador de Códigos QR Profesional y Gratis</title>
-    <meta name="description" content="Genera códigos QR personalizados gratis, con logo, colores y diferentes formas. Ideal para enlaces, Wi-Fi, WhatsApp y más. Descarga en alta calidad (PNG/SVG).">
-    <meta name="keywords" content="crear qr, generador qr, qr gratis, qr wifi, qr whatsapp, qr personalizado con logo, hacer codigo qr">
-    <meta name="author" content="CrearUnQR.com">
-    <link rel="canonical" href="https://crearunqr.com/" />
-    
-    <!-- Open Graph (Para previsualizaciones en WhatsApp, Facebook, etc.) -->
-    <meta property="og:title" content="Generador de Códigos QR Profesional">
-    <meta property="og:description" content="Crea tu código QR personalizado gratis en segundos. Añade tu logo y descarga en alta calidad.">
-    <meta property="og:url" content="https://crearunqr.com/">
-    <meta property="og:type" content="website">
-
+    <title>Generador QR Pro | CrearunQR.com</title>
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Librería ESENCIAL: Si esto falta, nada funciona -->
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
 </head>
 <body>
 
-    <!-- Botón de Modo Oscuro -->
-    <button id="theme-toggle" class="theme-btn" title="Cambiar modo oscuro/claro">🌙</button>
+    <!-- Botón Modo Oscuro -->
+    <button id="theme-toggle" class="theme-btn">🌙</button>
 
     <main class="container">
-        <!-- Columna Izquierda: Opciones y Formulario -->
+        <!-- COLUMNA IZQUIERDA -->
         <section class="left">
             <div class="header-titles">
                 <h1>Generador QR Pro</h1>
                 <p class="subtitle">Crea códigos dinámicos, personalizados y con logo.</p>
             </div>
 
-            <!-- Pestañas de Tipo de Datos -->
+            <!-- Pestañas -->
             <div class="tabs">
                 <button class="tab active" data-target="tab-url">Enlace</button>
                 <button class="tab" data-target="tab-text">Texto</button>
@@ -42,25 +31,25 @@
                 <button class="tab" data-target="tab-wifi">Wi-Fi</button>
             </div>
 
-            <!-- Contenedores de Datos Dinámicos -->
+            <!-- Formularios -->
             <div class="tab-content active" id="tab-url">
                 <div class="input-group">
                     <label>Introduce la URL</label>
-                    <input type="url" id="input-url" class="validate-input" placeholder="https://tu-web.com">
+                    <input type="url" id="input-url" placeholder="https://tu-web.com">
                 </div>
             </div>
 
             <div class="tab-content" id="tab-text">
                 <div class="input-group">
                     <label>Tu Texto</label>
-                    <textarea id="input-text" class="validate-input" rows="3" placeholder="Escribe tu mensaje aquí..."></textarea>
+                    <textarea id="input-text" rows="3" placeholder="Escribe tu mensaje..."></textarea>
                 </div>
             </div>
 
             <div class="tab-content" id="tab-email">
                 <div class="input-group">
                     <label>Email de destino</label>
-                    <input type="email" id="input-email-to" class="validate-input" placeholder="contacto@ejemplo.com">
+                    <input type="email" id="input-email-to" placeholder="contacto@ejemplo.com">
                 </div>
                 <div class="input-group">
                     <label>Asunto</label>
@@ -70,21 +59,20 @@
 
             <div class="tab-content" id="tab-wa">
                 <div class="input-group">
-                    <label>Número de WhatsApp (con prefijo, ej: 34)</label>
-                    <input type="number" id="input-wa-phone" class="validate-input" placeholder="34600000000">
+                    <label>Número (con prefijo, ej: 34)</label>
+                    <input type="number" id="input-wa-phone" placeholder="34600000000">
                 </div>
                 <div class="input-group">
-                    <label>Mensaje predefinido</label>
-                    <input type="text" id="input-wa-msg" placeholder="Hola, me gustaría información...">
+                    <label>Mensaje</label>
+                    <input type="text" id="input-wa-msg" placeholder="Hola...">
                 </div>
             </div>
 
             <div class="tab-content" id="tab-wifi">
-                <!-- Solucionado el problema móvil: La clase .row ahora se adaptará en CSS -->
                 <div class="row">
                     <div class="input-group">
-                        <label>Nombre de Red (SSID)</label>
-                        <input type="text" id="input-wifi-ssid" class="validate-input" placeholder="Mi_Red_WiFi">
+                        <label>Red (SSID)</label>
+                        <input type="text" id="input-wifi-ssid" placeholder="Mi_WiFi">
                     </div>
                     <div class="input-group">
                         <label>Contraseña</label>
@@ -103,67 +91,61 @@
 
             <hr class="divider">
 
-            <!-- Sección de Diseño -->
-            <h3 class="section-title">🎨 Personaliza el Diseño</h3>
-            
+            <!-- Diseño -->
+            <h3 class="section-title">🎨 Diseño</h3>
             <div class="row">
                 <div class="input-group">
-                    <label>Color del QR</label>
+                    <label>Color QR</label>
                     <input type="color" id="color-dark" value="#1e293b">
                 </div>
                 <div class="input-group">
-                    <label>Color de Fondo</label>
+                    <label>Fondo</label>
                     <input type="color" id="color-light" value="#ffffff">
                 </div>
             </div>
 
             <div class="input-group">
-                <label>Estilo de los puntos</label>
+                <label>Forma</label>
                 <select id="dot-style">
-                    <option value="square">Cuadrados (Clásico)</option>
-                    <option value="dots">Puntos redondos</option>
-                    <option value="rounded">Bordes redondeados</option>
-                    <option value="extra-rounded">Extra redondeados</option>
+                    <option value="square">Cuadrados</option>
+                    <option value="dots">Puntos</option>
+                    <option value="rounded">Redondeados</option>
+                    <option value="extra-rounded">Extra Redondos</option>
                 </select>
             </div>
 
             <hr class="divider">
 
-            <!-- Sección de Logo -->
-            <h3 class="section-title">🌟 Añadir Logo</h3>
+            <!-- Logo -->
             <div class="input-group">
-                <label>Sube un logo para el centro (PNG/JPG)</label>
-                <div class="logo-upload-wrapper">
-                    <input type="file" id="logo-input" accept="image/*">
-                    <button id="btn-remove-logo" class="btn-text" style="display:none;">Quitar Logo</button>
-                </div>
+                <label>Logo (Opcional)</label>
+                <input type="file" id="logo-input" accept="image/*">
+                <button id="btn-remove-logo" class="btn-text" style="display:none;">Quitar Logo</button>
             </div>
 
-            <button id="btn-generate" class="btn-primary mt-auto">Generar Código QR</button>
+            <button id="btn-generate" class="btn-primary">Generar QR</button>
 
-            <!-- Sección de Historial -->
+            <!-- NUEVA SECCIÓN DE HISTORIAL (CRÍTICA) -->
             <div id="history-container" class="history-section" style="display: none;">
-                <h3 class="section-title">🕒 Últimos QR Generados</h3>
+                <h3 class="section-title">🕒 Historial Reciente</h3>
                 <ul id="history-list"></ul>
             </div>
         </section>
 
-        <!-- Columna Derecha: Vista previa y Descargas -->
+        <!-- COLUMNA DERECHA -->
         <section class="right">
             <div id="qr-wrapper">
-                <div id="qr">
-                    <!-- El QR se inyectará aquí -->
-                </div>
+                <div id="qr"></div>
             </div>
-            
             <div class="download-actions">
-                <button id="btn-copy-link" class="btn-secondary hidden"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> Copiar</button>
+                <button id="btn-copy-link" class="btn-secondary hidden">Copiar</button>
                 <button id="btn-down-png" class="btn-secondary" disabled>PNG</button>
                 <button id="btn-down-svg" class="btn-secondary" disabled>SVG</button>
             </div>
         </section>
     </main>
 
+    <!-- Cargamos tu script AL FINAL -->
     <script src="script.js"></script>
 </body>
 </html>
