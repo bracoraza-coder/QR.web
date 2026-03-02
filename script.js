@@ -182,6 +182,8 @@ function renderHistory() {
     const historyContainer = document.getElementById('history-container');
     const historyList = document.getElementById('history-list');
     
-    if(!historyContainer || !historyList) return;
+    if (!historyContainer || !historyList) {
+        return;
+    }
 
-    let history = JSON.parse(localStorage.getItem('qrHistory') || '
+    let historyArray =
