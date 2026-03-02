@@ -1,3 +1,4 @@
+// --- PARTE 1 ---
 // Tema Oscuro / Claro
 const themeToggle = document.getElementById('theme-toggle');
 const currentTheme = localStorage.getItem('theme') || 'light';
@@ -82,11 +83,11 @@ btnRemoveLogo.addEventListener("click", () => {
     uploadedLogoData = "";
     btnRemoveLogo.style.display = "none";
 });
-
+// --- PARTE 2 ---
 // Extraer Datos según pestaña
 function getQrData() {
     let data = "";
-    let labelText = ""; // Para guardar en historial
+    let labelText = ""; 
     switch (currentTab) {
         case "tab-url":
             data = document.getElementById("input-url").value.trim();
@@ -141,21 +142,15 @@ btnGenerate.addEventListener("click", () => {
         cornersSquareOptions: { type: dotStyle === 'dots' || dotStyle === 'rounded' ? 'extra-rounded' : 'square', color: colorDark }
     });
 
-    // Resetear animación y redibujar
     qrContainer.innerHTML = "";
     qrWrapper.classList.remove("qr-animate");
-    
-    // Forzar reflow para reiniciar la animación CSS
     void qrWrapper.offsetWidth; 
-    
     qrCode.append(qrContainer);
     qrWrapper.classList.add("qr-animate");
 
-    // Habilitar botones
     btnDownPng.disabled = false;
     btnDownSvg.disabled = false;
     
-    // Guardar en Historial Local
     saveToHistory(data, labelText);
 });
 
@@ -172,14 +167,13 @@ btnCopyLink.addEventListener("click", () => {
     }
 });
 
-// --- SISTEMA DE HISTORIAL PRO ---
+// --- SISTEMA DE HISTORIAL ---
 function saveToHistory(data, label) {
     if(!data) return;
     let history = JSON.parse(localStorage.getItem('qrHistory') || '[]');
-    // Evitar duplicados
     history = history.filter(item => item.data !== data);
-    history.unshift({ data, label, date: new Date().toLocaleString() });
-    if(history.length > 5) history.pop(); // Solo guarda los 5 últimos
+    history.unshift({ data: data, label: label, date: new Date().toLocaleTimeString() });
+    if(history.length > 5) history.pop();
     localStorage.setItem('qrHistory', JSON.stringify(history));
     renderHistory();
 }
@@ -188,7 +182,6 @@ function renderHistory() {
     const historyContainer = document.getElementById('history-container');
     const historyList = document.getElementById('history-list');
     
-    // Verificar si los elementos existen
     if(!historyContainer || !historyList) return;
 
     let history = JSON.parse(localStorage.getItem('qrHistory') || '
