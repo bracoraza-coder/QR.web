@@ -42,7 +42,6 @@ const qrWrapper = document.getElementById("qr-wrapper");
 const btnGenerate = document.getElementById("btn-generate");
 const btnDownPng = document.getElementById("btn-down-png");
 const btnDownSvg = document.getElementById("btn-down-svg");
-const btnCopyLink = document.getElementById("btn-copy-link");
 const logoInput = document.getElementById("logo-input");
 const btnRemoveLogo = document.getElementById("btn-remove-logo");
 
@@ -60,17 +59,6 @@ tabs.forEach(tab => {
         currentTab = tab.getAttribute("data-target");
         document.getElementById(currentTab).classList.add("active");
         
-        // Mostrar botón de copiar solo si es URL o Texto
-        if(btnCopyLink) {
-            if(currentTab === "tab-url" || currentTab === "tab-text") {
-                btnCopyLink.classList.remove("hidden");
-            } else {
-                btnCopyLink.classList.add("hidden");
-            }
-        }
-    });
-});
-
 // Logo
 if(logoInput) {
     logoInput.addEventListener("change", function() {
@@ -175,18 +163,6 @@ if(btnGenerate) {
 if(btnDownPng) btnDownPng.addEventListener("click", () => qrCode.download({ name: "mi-qr", extension: "png" }));
 if(btnDownSvg) btnDownSvg.addEventListener("click", () => qrCode.download({ name: "mi-qr", extension: "svg" }));
 
-// MODIFICACIÓN: COPIAR IMAGEN QR EN VEZ DE TEXTO
-if(btnCopyLink) {
-    btnCopyLink.addEventListener("click", async () => {
-        try {
-            // 1. Generamos el 'Blob' (la imagen en memoria) del QR actual en formato PNG
-            // getRawData viene de la librería qr-code-styling
-            const blob = await qrCode.getRawData("png");
-
-            if (!blob) {
-                alert("Primero genera el QR para poder copiarlo.");
-                return;
-            }
 
             // 2. Preparamos el item para el portapapeles (Tipo: imagen PNG)
             const data = [new ClipboardItem({ "image/png": blob })];
