@@ -1,26 +1,30 @@
-// --- PARTE 1 ---
-// Tema Oscuro / Claro
+// --- PARTE 1: Configuración inicial ---
+
 const themeToggle = document.getElementById('theme-toggle');
 const currentTheme = localStorage.getItem('theme') || 'light';
+
+// Establecer tema al cargar
 if (currentTheme === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
-    themeToggle.textContent = '☀️';
+    if (themeToggle) themeToggle.textContent = '☀️';
 }
 
-themeToggle.addEventListener('click', () => {
-    let theme = document.documentElement.getAttribute('data-theme');
-    if (theme === 'dark') {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('theme', 'light');
-        themeToggle.textContent = '🌙';
-    } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('theme', 'dark');
-        themeToggle.textContent = '☀️';
-    }
-});
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        let theme = document.documentElement.getAttribute('data-theme');
+        if (theme === 'dark') {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+            themeToggle.textContent = '🌙';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            themeToggle.textContent = '☀️';
+        }
+    });
+}
 
-// Configuración inicial de la librería QR
+// Configuración inicial de la librería
 const qrCode = new QRCodeStyling({
     width: 280,
     height: 280,
@@ -57,44 +61,52 @@ tabs.forEach(tab => {
         document.getElementById(currentTab).classList.add("active");
         
         // Mostrar botón de copiar solo si es URL o Texto
-        if(currentTab === "tab-url" || currentTab === "tab-text") {
-            btnCopyLink.classList.remove("hidden");
-        } else {
-            btnCopyLink.classList.add("hidden");
+        if(btnCopyLink) {
+            if(currentTab === "tab-url" || currentTab === "tab-text") {
+                btnCopyLink.classList.remove("hidden");
+            } else {
+                btnCopyLink.classList.add("hidden");
+            }
         }
     });
 });
 
-// Subida de Logo
-logoInput.addEventListener("change", function() {
-    const file = this.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => { 
-            uploadedLogoData = e.target.result; 
-            btnRemoveLogo.style.display = "block";
-        };
-        reader.readAsDataURL(file);
-    }
-});
+// Logo
+if(logoInput) {
+    logoInput.addEventListener("change", function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => { 
+                uploadedLogoData = e.target.result; 
+                if(btnRemoveLogo) btnRemoveLogo.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
 
-btnRemoveLogo.addEventListener("click", () => {
-    logoInput.value = "";
-    uploadedLogoData = "";
-    btnRemoveLogo.style.display = "none";
-});
-// --- PARTE 2 ---
-// Extraer Datos según pestaña
+if(btnRemoveLogo) {
+    btnRemoveLogo.addEventListener("click", () => {
+        if(logoInput) logoInput.value = "";
+        uploadedLogoData = "";
+        btnRemoveLogo.style.display = "none";
+    });
+}
+
+// Función extraer datos
 function getQrData() {
     let data = "";
     let labelText = ""; 
     switch (currentTab) {
         case "tab-url":
-            data = document.getElementById("input-url").value.trim();
+            const urlVal = document.getElementById("input-url");
+            data = urlVal ? urlVal.value.trim() : "";
             labelText = "Enlace: " + data;
             break;
         case "tab-text":
-            data = document.getElementById("input-text").value.trim();
+            const txtVal = document.getElementById("input-text");
+            data = txtVal ? txtVal.value.trim() : "";
             labelText = "Texto: " + data.substring(0,20) + "...";
             break;
         case "tab-email":
@@ -120,54 +132,62 @@ function getQrData() {
     return { data, labelText };
 }
 
-// Generar QR y Animación
-btnGenerate.addEventListener("click", () => {
-    const { data, labelText } = getQrData();
+// Evento Generar
+if(btnGenerate) {
+    btnGenerate.addEventListener("click", () => {
+        const { data, labelText } = getQrData();
 
-    if (!data) {
-        btnGenerate.textContent = "¡Rellena los datos!";
-        setTimeout(() => btnGenerate.textContent = "Generar Código QR", 2000);
-        return;
-    }
+        if (!data) {
+            const originalText = btnGenerate.textContent;
+            btnGenerate.textContent = "¡Faltan datos!";
+            setTimeout(() => btnGenerate.textContent = originalText, 2000);
+            return;
+        }
 
-    const colorDark = document.getElementById("color-dark").value;
-    const colorLight = document.getElementById("color-light").value;
-    const dotStyle = document.getElementById("dot-style").value;
+        const colorDark = document.getElementById("color-dark").value;
+        const colorLight = document.getElementById("color-light").value;
+        const dotStyle = document.getElementById("dot-style").value;
 
-    qrCode.update({
-        data: data,
-        image: uploadedLogoData,
-        dotsOptions: { color: colorDark, type: dotStyle },
-        backgroundOptions: { color: colorLight },
-        cornersSquareOptions: { type: dotStyle === 'dots' || dotStyle === 'rounded' ? 'extra-rounded' : 'square', color: colorDark }
+        qrCode.update({
+            data: data,
+            image: uploadedLogoData,
+            dotsOptions: { color: colorDark, type: dotStyle },
+            backgroundOptions: { color: colorLight },
+            cornersSquareOptions: { type: dotStyle === 'dots' || dotStyle === 'rounded' ? 'extra-rounded' : 'square', color: colorDark }
+        });
+
+        if(qrContainer) qrContainer.innerHTML = "";
+        if(qrWrapper) {
+            qrWrapper.classList.remove("qr-animate");
+            void qrWrapper.offsetWidth; 
+            qrCode.append(qrContainer);
+            qrWrapper.classList.add("qr-animate");
+        }
+
+        if(btnDownPng) btnDownPng.disabled = false;
+        if(btnDownSvg) btnDownSvg.disabled = false;
+        
+        saveToHistory(data, labelText);
     });
+}
 
-    qrContainer.innerHTML = "";
-    qrWrapper.classList.remove("qr-animate");
-    void qrWrapper.offsetWidth; 
-    qrCode.append(qrContainer);
-    qrWrapper.classList.add("qr-animate");
+// Descargas
+if(btnDownPng) btnDownPng.addEventListener("click", () => qrCode.download({ name: "mi-qr", extension: "png" }));
+if(btnDownSvg) btnDownSvg.addEventListener("click", () => qrCode.download({ name: "mi-qr", extension: "svg" }));
 
-    btnDownPng.disabled = false;
-    btnDownSvg.disabled = false;
-    
-    saveToHistory(data, labelText);
-});
+if(btnCopyLink) {
+    btnCopyLink.addEventListener("click", () => {
+        const { data } = getQrData();
+        if(data) {
+            navigator.clipboard.writeText(data);
+            const original = btnCopyLink.textContent;
+            btnCopyLink.textContent = "¡Copiado!";
+            setTimeout(() => btnCopyLink.textContent = original, 2000);
+        }
+    });
+}
 
-// Descargas y Copiar
-btnDownPng.addEventListener("click", () => qrCode.download({ name: "mi-qr", extension: "png" }));
-btnDownSvg.addEventListener("click", () => qrCode.download({ name: "mi-qr", extension: "svg" }));
-
-btnCopyLink.addEventListener("click", () => {
-    const { data } = getQrData();
-    if(data) {
-        navigator.clipboard.writeText(data);
-        btnCopyLink.innerHTML = "¡Copiado!";
-        setTimeout(() => btnCopyLink.innerHTML = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> Copiar`, 2000);
-    }
-});
-
-// --- SISTEMA DE HISTORIAL ---
+// Funciones de Historial
 function saveToHistory(data, label) {
     if(!data) return;
     let history = JSON.parse(localStorage.getItem('qrHistory') || '[]');
@@ -179,45 +199,36 @@ function saveToHistory(data, label) {
 }
 
 function renderHistory() {
-    // 1. Elementos HTML
     const historyContainer = document.getElementById('history-container');
     const historyList = document.getElementById('history-list');
 
-    // 2. Si no existen en el HTML, salir para evitar errores
-    if (!historyContainer || !historyList) {
-        return;
-    }
+    if (!historyContainer || !historyList) return;
 
-    // 3. Recuperar datos (Escrito simple para evitar errores de corte)
     let history = [];
     const savedData = localStorage.getItem('qrHistory');
-    
     if (savedData) {
         history = JSON.parse(savedData);
     }
 
-    // 4. Limpiar vista previa
     historyList.innerHTML = "";
 
-    // 5. Si no hay historial, ocultar la caja y salir
     if (history.length === 0) {
         historyContainer.style.display = "none";
         return;
     }
 
-    // 6. Si hay historial, mostrar la caja y crear la lista
     historyContainer.style.display = "block";
 
     history.forEach(item => {
         const li = document.createElement("li");
-        li.textContent = item.label; // Mostramos el texto corto (Ej: "Enlace: google.com")
-        
-        // (Opcional) Al hacer click, recargar ese QR
+        li.textContent = item.label;
         li.onclick = function() {
-            // Simulamos escribir el dato y generar
-            alert("Has seleccionado un QR antiguo: " + item.data); 
+            // Opcional: Recargar al clicar en el historial (necesita lógica extra para rellenar inputs)
+            alert("Has seleccionado del historial: " + item.label);
         };
-        
         historyList.appendChild(li);
     });
 }
+
+// Ejecutar historial al cargar la página
+renderHistory();
