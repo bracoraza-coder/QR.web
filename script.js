@@ -1,22 +1,25 @@
-// --- PARTE 1: Configuración inicial ---
-
 const themeToggle = document.getElementById('theme-toggle');
-const currentTheme = localStorage.getItem('theme') || 'light';
 
-// Establecer tema al cargar
+// Comprobar preferencia guardada al cargar la página
+const currentTheme = localStorage.getItem('theme');
 if (currentTheme === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
     if (themeToggle) themeToggle.textContent = '☀️';
 }
 
+// Evento al hacer click en el botón
 if (themeToggle) {
     themeToggle.addEventListener('click', () => {
-        let theme = document.documentElement.getAttribute('data-theme');
-        if (theme === 'dark') {
+        // Verificar si está activo el modo oscuro
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+        if (isDark) {
+            // Desactivar oscuro -> Poner Claro
             document.documentElement.removeAttribute('data-theme');
             localStorage.setItem('theme', 'light');
             themeToggle.textContent = '🌙';
         } else {
+            // Activar oscuro
             document.documentElement.setAttribute('data-theme', 'dark');
             localStorage.setItem('theme', 'dark');
             themeToggle.textContent = '☀️';
