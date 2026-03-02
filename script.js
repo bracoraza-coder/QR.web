@@ -262,7 +262,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 li.textContent = item.label;
                 
                 li.onclick = () => {
-   alert("Dato antiguo: " + item.data);
+   // Copiar al portapapeles
+   navigator.clipboard.writeText(item.data);
+   
+   // Efecto visual temporal
+   const originalText = li.textContent;
+   li.textContent = "¡Copiado! ✅";
+   li.style.background = "#dcfce7"; // Verde claro
+   li.style.color = "#166534";
+   
+   setTimeout(() => {
+       li.textContent = originalText;
+       li.style.background = ""; // Volver al color original
+       li.style.color = "";
+   }, 1500);
 };
     // Cargar historial al arrancar
     renderHistory();
