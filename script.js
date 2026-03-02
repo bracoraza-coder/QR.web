@@ -175,18 +175,40 @@ if(btnGenerate) {
 if(btnDownPng) btnDownPng.addEventListener("click", () => qrCode.download({ name: "mi-qr", extension: "png" }));
 if(btnDownSvg) btnDownSvg.addEventListener("click", () => qrCode.download({ name: "mi-qr", extension: "svg" }));
 
+// MODIFICACIÓN: COPIAR IMAGEN QR EN VEZ DE TEXTO
 if(btnCopyLink) {
-    btnCopyLink.addEventListener("click", () => {
-        const { data } = getQrData();
-        if(data) {
-            navigator.clipboard.writeText(data);
-            const original = btnCopyLink.textContent;
-            btnCopyLink.textContent = "¡Copiado!";
-            setTimeout(() => btnCopyLink.textContent = original, 2000);
+    btnCopyLink.addEventListener("click", async () => {
+        try {
+            // 1. Generamos el 'Blob' (la imagen en memoria) del QR actual en formato PNG
+            // getRawData viene de la librería qr-code-styling
+            const blob = await qrCode.getRawData("png");
+
+            if (!blob) {
+                alert("Primero genera el QR para poder copiarlo.");
+                return;
+            }
+
+            // 2. Preparamos el item para el portapapeles (Tipo: imagen PNG)
+            const data = [new ClipboardItem({ "image/png": blob })];
+
+            // 3. Escribimos la imagen en el portapapeles
+            await navigator.clipboard.write(data);
+
+            // 4. Feedback visual (Cambia el texto del botón temporalmente)
+            const originalText = btnCopyLink.innerHTML; // Guardamos el icono/texto original
+            btnCopyLink.innerText = "¡Imagen Copiada!";
+            
+            setTimeout(() => {
+                btnCopyLink.innerHTML = originalText;
+            }, 2000);
+
+        } catch (err) {
+            console.error(err);
+            // Fallback por si el navegador es muy antiguo
+            alert("Tu navegador no permite copiar imágenes al portapapeles. Por favor, usa el botón de Descargar.");
         }
     });
 }
-
 // Funciones de Historial
 function saveToHistory(data, label) {
     if(!data) return;
