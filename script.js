@@ -1,60 +1,74 @@
-// Instancia de la librería qr-code-styling
-const qrCode = new QRCodeStyling({
-    width: 280,
-    height: 280,
-    type: "svg", // Renderizamos en SVG por defecto para que sea súper nítido
-    data: "https://generador-qr.com",
-    image: "",
-    dotsOptions: {
-        color: "#000000",
-        type: "square" // square, rounded, dots, extra-rounded
-    },
-    backgroundOptions: {
-        color: "#ffffff",
-    },
-    imageOptions: {
-        crossOrigin: "anonymous",
-        margin: 10 // Margen alrededor del logo
-    },
-    cornersSquareOptions: {
-        type: "square"
+// Tema Oscuro / Claro
+const themeToggle = document.getElementById('theme-toggle');
+const currentTheme = localStorage.getItem('theme') || 'light';
+if (currentTheme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+
+themeToggle.addEventListener('click', () => {
+    let theme = document.documentElement.getAttribute('data-theme');
+    if (theme === 'dark') {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        themeToggle.textContent = '🌙';
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        themeToggle.textContent = '☀️';
     }
 });
 
-// Referencias del DOM
+// Configuración inicial de la librería QR
+const qrCode = new QRCodeStyling({
+    width: 280,
+    height: 280,
+    type: "svg",
+    data: "https://crearunqr.com",
+    image: "",
+    dotsOptions: { color: "#1e293b", type: "square" },
+    backgroundOptions: { color: "#ffffff" },
+    imageOptions: { crossOrigin: "anonymous", margin: 10 },
+    cornersSquareOptions: { type: "square" }
+});
+
 const qrContainer = document.getElementById("qr");
+const qrWrapper = document.getElementById("qr-wrapper");
 const btnGenerate = document.getElementById("btn-generate");
 const btnDownPng = document.getElementById("btn-down-png");
 const btnDownSvg = document.getElementById("btn-down-svg");
+const btnCopyLink = document.getElementById("btn-copy-link");
 const logoInput = document.getElementById("logo-input");
 const btnRemoveLogo = document.getElementById("btn-remove-logo");
 
-// Lógica de Pestañas (Tabs)
 let currentTab = "tab-url";
+let uploadedLogoData = "";
+
+// Pestañas
 const tabs = document.querySelectorAll(".tab");
 const tabContents = document.querySelectorAll(".tab-content");
-
 tabs.forEach(tab => {
     tab.addEventListener("click", () => {
-        // Quitar activos
         tabs.forEach(t => t.classList.remove("active"));
         tabContents.forEach(c => c.classList.remove("active"));
-        
-        // Poner activo el seleccionado
         tab.classList.add("active");
         currentTab = tab.getAttribute("data-target");
         document.getElementById(currentTab).classList.add("active");
+        
+        // Mostrar botón de copiar solo si es URL o Texto
+        if(currentTab === "tab-url" || currentTab === "tab-text") {
+            btnCopyLink.classList.remove("hidden");
+        } else {
+            btnCopyLink.classList.add("hidden");
+        }
     });
 });
 
-// Manejo de subida de Logo
-let uploadedLogoData = "";
+// Subida de Logo
 logoInput.addEventListener("change", function() {
     const file = this.files[0];
     if (file) {
         const reader = new FileReader();
-        reader.onload = (e) => {
-            uploadedLogoData = e.target.result;
+        reader.onload = (e) => { 
+            uploadedLogoData = e.target.result; 
+            btnRemoveLogo.style.display = "block";
         };
         reader.readAsDataURL(file);
     }
@@ -63,88 +77,109 @@ logoInput.addEventListener("change", function() {
 btnRemoveLogo.addEventListener("click", () => {
     logoInput.value = "";
     uploadedLogoData = "";
+    btnRemoveLogo.style.display = "none";
 });
 
-// Formateo de datos basado en la pestaña seleccionada
+// Extraer Datos según pestaña
 function getQrData() {
     let data = "";
-    
+    let labelText = ""; // Para guardar en historial
     switch (currentTab) {
         case "tab-url":
             data = document.getElementById("input-url").value.trim();
+            labelText = "Enlace: " + data;
             break;
         case "tab-text":
             data = document.getElementById("input-text").value.trim();
+            labelText = "Texto: " + data.substring(0,20) + "...";
             break;
         case "tab-email":
             const email = document.getElementById("input-email-to").value.trim();
             const sub = document.getElementById("input-email-sub").value.trim();
             if(email) data = `mailto:${email}?subject=${encodeURIComponent(sub)}`;
+            labelText = "Email: " + email;
             break;
         case "tab-wa":
-            const phone = document.getElementById("input-wa-phone").value.trim().replace(/\s+/g, '');
+            const phone = document.getElementById("input-wa-phone").value.trim();
             const msg = document.getElementById("input-wa-msg").value.trim();
             if(phone) data = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+            labelText = "WhatsApp: " + phone;
             break;
         case "tab-wifi":
             const ssid = document.getElementById("input-wifi-ssid").value.trim();
             const pass = document.getElementById("input-wifi-pass").value.trim();
             const type = document.getElementById("input-wifi-type").value;
             if(ssid) data = `WIFI:T:${type};S:${ssid};P:${pass};H:false;;`;
+            labelText = "Wi-Fi: " + ssid;
             break;
     }
-    return data;
+    return { data, labelText };
 }
 
-// Evento Principal: Generar
+// Generar QR y Animación
 btnGenerate.addEventListener("click", () => {
-    const data = getQrData();
+    const { data, labelText } = getQrData();
 
     if (!data) {
-        alert("Por favor, rellena los campos necesarios para tu código QR.");
+        btnGenerate.textContent = "¡Rellena los datos!";
+        setTimeout(() => btnGenerate.textContent = "Generar Código QR", 2000);
         return;
     }
 
-    // Obtener colores y estilos
     const colorDark = document.getElementById("color-dark").value;
     const colorLight = document.getElementById("color-light").value;
     const dotStyle = document.getElementById("dot-style").value;
 
-    // Actualizar configuración
     qrCode.update({
         data: data,
         image: uploadedLogoData,
-        dotsOptions: {
-            color: colorDark,
-            type: dotStyle
-        },
-        backgroundOptions: {
-            color: colorLight
-        },
-        // Sincronizar los cuadrados de las esquinas con el estilo principal
-        cornersSquareOptions: {
-            type: dotStyle === 'dots' || dotStyle === 'rounded' ? 'extra-rounded' : 'square',
-            color: colorDark
-        }
+        dotsOptions: { color: colorDark, type: dotStyle },
+        backgroundOptions: { color: colorLight },
+        cornersSquareOptions: { type: dotStyle === 'dots' || dotStyle === 'rounded' ? 'extra-rounded' : 'square', color: colorDark }
     });
 
-    // Limpiar contenedor e inyectar nuevo QR
+    // Resetear animación y redibujar
     qrContainer.innerHTML = "";
+    qrWrapper.classList.remove("qr-animate");
+    
+    // Forzar reflow para reiniciar la animación CSS
+    void qrWrapper.offsetWidth; 
+    
     qrCode.append(qrContainer);
+    qrWrapper.classList.add("qr-animate");
 
-    // Habilitar descargas
+    // Habilitar botones
     btnDownPng.disabled = false;
     btnDownSvg.disabled = false;
+    
+    // Guardar en Historial Local
+    saveToHistory(data, labelText);
 });
 
-// Descargas Nativas
-btnDownPng.addEventListener("click", () => {
-    qrCode.download({ name: "qr-code", extension: "png" });
+// Descargas y Copiar
+btnDownPng.addEventListener("click", () => qrCode.download({ name: "mi-qr", extension: "png" }));
+btnDownSvg.addEventListener("click", () => qrCode.download({ name: "mi-qr", extension: "svg" }));
+
+btnCopyLink.addEventListener("click", () => {
+    const { data } = getQrData();
+    if(data) {
+        navigator.clipboard.writeText(data);
+        btnCopyLink.innerHTML = "¡Copiado!";
+        setTimeout(() => btnCopyLink.innerHTML = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> Copiar`, 2000);
+    }
 });
 
-btnDownSvg.addEventListener("click", () => {
-    qrCode.download({ name: "qr-code", extension: "svg" });
-});
+// --- SISTEMA DE HISTORIAL PRO ---
+function saveToHistory(data, label) {
+    if(!data) return;
+    let history = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+    // Evitar duplicados
+    history = history.filter(item => item.data !== data);
+    history.unshift({ data, label, date: new Date().toLocaleString() });
+    if(history.length > 5) history.pop(); // Solo guarda los 5 últimos
+    localStorage.setItem('qrHistory', JSON.stringify(history));
+    renderHistory();
+}
 
-// Render inicial vacío (Opcional)
-qrCode.append(qrContainer);
+function renderHistory() {
+    const history = JSON.parse(localStorage.getItem('qrHistory') || '
