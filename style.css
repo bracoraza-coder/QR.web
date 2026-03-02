@@ -95,3 +95,55 @@ button { cursor:pointer; font-weight:600; border-radius:8px; border:none; }
     #qr-wrapper { width:250px; height:250px; }
     .download-actions { width:250px; }
 }
+/* --- ESTILOS EXTRA PRO (SEO Y PUBLICIDAD) --- */
+
+/* La sección de texto para que Google nos quiera */
+.seo-content {
+    max-width: 1100px;
+    margin: 40px auto 80px auto;
+    padding: 20px;
+    color: var(--text-main);
+}
+
+.seo-content h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: var(--text-main);
+}
+
+.seo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.seo-content article {
+    background: var(--bg-container);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+.seo-content h3 {
+    color: #3b82f6;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.seo-content p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Scroll global para permitir bajar a leer el texto */
+body {
+    /* IMPORTANTE: Cambiamos esto para poder hacer scroll y ver el texto de abajo */
+    overflow-y: auto !important; 
+    height: auto !important;
+    min-height: 100vh;
+    flex-direction: column;
+    padding: 40px 20px;
+}
